@@ -1,7 +1,6 @@
 /**
- * Design tokens (DESIGN §6). Light theme on :root.
- * A future dark theme only needs to override these variables under [data-theme='dark'];
- * every component reads them through the Tailwind names mapped in globals.css.
+ * Design tokens (DESIGN §6). Light theme only (dark mode is out of scope, D14).
+ * Every component reads them through the Tailwind names mapped in globals.css.
  */
 :root {
   color-scheme: light;

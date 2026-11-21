@@ -38,10 +38,8 @@ members and labels, so every feature is visible right away.
 | Search and filtering       |  Yes  | Title search plus priority, assignee and label filters, all in the URL        |
 | Team members and assignees |  Yes  | Add, edit and remove members (name, color, avatar URL); avatar stack          |
 | Labels / tags              |  Yes  | Create, rename, recolor and delete labels; chips on cards; label filter       |
-| Activity log               |  Yes  | Written by database triggers; timeline in the detail sheet                    |
-| Comments                   |  Yes  | Oldest-first thread in the detail sheet                                       |
-
-<!-- TODO verify once P4-1 merges: activity timeline and comments UI -->
+| Activity log               |  Yes  | Written by database triggers; one timeline with comments in the detail sheet  |
+| Comments                   |  Yes  | In the same oldest-first feed; ⌘/Ctrl+Enter to send; count shown on cards     |
 
 Also: **Realtime multi-tab sync**. Other tabs of the same guest refetch when tasks, assignees,
 labels or comments change.
