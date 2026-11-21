@@ -78,7 +78,10 @@ Small and written by hand, so every later agent builds on the same base. These f
 | `features/labels/LabelField.tsx` | `({ task }: { task: Task })` | P3a task sheet | P3b labels |
 | `features/activity/TaskFeed.tsx` | `({ taskId }: { taskId: string })` | P3a task sheet | P4 |
 
-`Task` = `Tables<'tasks'>` from `database.types.ts`, re-exported from `src/features/tasks/types.ts` (created in P1a, owned by P2).
+Also written in P0 (as built):
+- `src/lib/database.types.ts`: **hand-written** placeholder in the generated format (tasks, team_members, task_assignees, labels, task_labels). Replaced by `supabase gen types` at the P1 gate and never edited by hand after that.
+- `src/features/tasks/types.ts`: `Task` = `Tables<'tasks'>` with `status`/`priority` narrowed to `Status`/`Priority`, plus `TaskInsert`/`TaskUpdate` (owned by P2 after P0).
+- All `src/` imports use the **`@/` alias** (= `src/`). P1a configures it in `tsconfig` + Vite + Vitest.
 
 ---
 
@@ -92,11 +95,11 @@ Each brief below is the **scope**. The actual prompt adds: "Read `docs/DESIGN.md
 - Vite + React + TS strict; Tailwind v4 with DESIGN §6 tokens as CSS variables in `src/styles/tokens.css` (`[data-theme]`-ready, D14); Inter via `@fontsource-variable/inter`.
 - ESLint (typescript-eslint, react-hooks), Prettier, Vitest + jsdom + Testing Library. Scripts: `dev`, `build`, `typecheck`, `lint`, `format`, `test`.
 - Install the agreed deps now, so later agents don't edit `package.json`: `@supabase/supabase-js @tanstack/react-query @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities @radix-ui/react-{dialog,popover,dropdown-menu,tooltip,tabs} lucide-react sonner date-fns clsx`.
-- `src/lib/supabase.ts` (typed client; throws a clear error if env vars are missing); `src/lib/database.types.ts` **hand-written in the generated format** for the `tasks`, `team_members`, `task_assignees`, `labels` and `task_labels` tables (P1b's SQL is the reference; replaced by generated types at the gate).
+- `src/lib/supabase.ts` (typed `createClient<Database>` from `VITE_SUPABASE_URL` + `VITE_SUPABASE_PUBLISHABLE_KEY`; throws a clear error if they're missing). `database.types.ts` already exists from P0.
 - `src/app/auth.ts`: `ensureSession()` as a **module-level singleton promise** (`getSession` → `signInAnonymously`); `useSession()` hook. Unit test: two calls start only one sign-in.
 - Providers (QueryClient with sensible retry, Sonner `Toaster`), `App.tsx` shell: header (board name D15, `BoardStats` slot, `HeaderMembers` slot, "New task" button → `?new=todo`), toolbar (`FilterBar` slot), board area, `TaskSheetHost` slot, offline banner (`navigator.onLine`).
 - `components/ui/`: Button, Input, Textarea, Select, Badge, Skeleton, EmptyState, ErrorState, Kbd, Spinner. Styled from tokens; focus rings.
-- Creates all P1a slot stubs from §3 and `features/tasks/types.ts`.
+- Creates all P1a slot stubs from §3. Makes the P0 files compile (alias `@/`) without changing them.
 - `.env.example`. **Done when:** `npm run build` passes and the shell renders with a placeholder board area.
 
 **P1b: Schema** (owns `supabase/**`, `scripts/rls-check.ts`)
