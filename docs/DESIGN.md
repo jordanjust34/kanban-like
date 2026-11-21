@@ -18,7 +18,7 @@ Reviewers look for:
 ## 2. Architecture
 
 ```
-┌──────────────────────────────┐        HTTPS (anon key + user JWT)        ┌───────────────────────────┐
+┌──────────────────────────────┐        HTTPS (publishable key + user JWT) ┌───────────────────────────┐
 │  React SPA (Vite + TS)       │ ────────────────────────────────────────▶ │  Supabase                 │
 │  hosted on Vercel            │                                           │  • Auth (anonymous)       │
 │                              │ ◀──────────────────────────────────────── │  • Postgres + RLS         │
@@ -484,7 +484,7 @@ Compact pill group in the header: **Total**, **Done** (with % and a thin progres
 
 ## 8. Quality, testing, deployment
 
-- **Code quality:** TS strict, ESLint (typescript-eslint, react-hooks), Prettier. Generated DB types are committed so the build doesn't need Supabase CLI access.
+- **Code quality:** TS strict, oxlint (TypeScript, React hooks rules), Prettier. Generated DB types are committed so the build doesn't need Supabase CLI access.
 - **Unit tests (Vitest):** `getDueUrgency`, `positionBetween`, filter matching, stats derivation.
 - **Manual checklist:** RLS isolation test (§4.4), drag on touch device, keyboard drag, offline toggle in devtools, slow-3G throttling to see skeletons.
 - **Optional E2E (Playwright):** create → drag → reload → verify column.

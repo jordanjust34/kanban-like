@@ -1,15 +1,18 @@
 -- ═════════════════════════════════════════════════════════════
 -- Kanban Task Board: full database schema (Supabase / Postgres 17)
 --
--- READ-ONLY COPY for documentation. The source of truth is the three
--- migrations in supabase/migrations/, applied in order with
+-- READ-ONLY COPY for documentation. The source of truth is the
+-- 6 migrations in supabase/migrations/, applied in order with
 -- `npx supabase db push`. This file is their plain concatenation
 -- (regenerate it if a migration changes); running it once on an empty
 -- Supabase project produces the same schema.
 --
---   20261120000001_init.sql     tasks, RLS, seed_10_tasks
---   20261120000002_members.sql  team_members, task_assignees, seed_20_members
---   20261120000003_labels.sql   labels, task_labels, seed_30_labels
+--   20261120000001_init.sql                          tasks, RLS, seed_10_tasks
+--   20261120000002_members.sql                       team_members, task_assignees, seed_20_members
+--   20261120000003_labels.sql                        labels, task_labels, seed_30_labels
+--   20261120000004_api_grants.sql                    table privileges for `authenticated`
+--   20261121000005_seed_us_central_dates.sql         sample due dates in US Central time
+--   20261121000006_activity_comments_realtime.sql    comments, task_activity + triggers, Realtime
 -- ═════════════════════════════════════════════════════════════
 
 
@@ -343,6 +346,9 @@ create trigger seed_30_labels
   after insert on auth.users
   for each row execute function public.seed_new_user_labels();
 
+
+-- >>> 20261120000004_api_grants.sql
+
 -- ═════════════════════════════════════════════════════════════
 -- 0004 API grants
 --
@@ -360,6 +366,9 @@ grant select, insert, update, delete on table
   public.labels,
   public.task_labels
 to authenticated;
+
+
+-- >>> 20261121000005_seed_us_central_dates.sql
 
 -- ═════════════════════════════════════════════════════════════
 -- 0005 seed dates in US Central time
@@ -427,6 +436,9 @@ begin
 end $$;
 
 revoke execute on function public.seed_new_user_tasks() from public, anon, authenticated;
+
+
+-- >>> 20261121000006_activity_comments_realtime.sql
 
 -- ═════════════════════════════════════════════════════════════
 -- 0006 comments, activity log, Realtime
