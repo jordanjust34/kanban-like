@@ -9,7 +9,27 @@ export type Database = {
   }
   "public": {
           Tables: {
-            "labels": {
+            "comments": {
+                  Row: {
+                    "body": string,"created_at": string,"id": string,"task_id": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body": string,"created_at"?: string,"id"?: string,"task_id": string,"user_id"?: string
+                  }
+                  Update: {
+                    "body"?: string,"created_at"?: string,"id"?: string,"task_id"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "comments_task_id_user_id_fkey"
+      columns: ["task_id","user_id"]
+isOneToOne: false
+      referencedRelation: "tasks"
+      referencedColumns: ["id","user_id"]
+    }
+                  ]
+                },"labels": {
                   Row: {
                     "color": string,"created_at": string,"id": string,"name": string,"user_id": string
                   }
@@ -22,6 +42,26 @@ export type Database = {
                   }
                   Relationships: [
                     
+                  ]
+                },"task_activity": {
+                  Row: {
+                    "created_at": string,"id": number,"kind": string,"payload": NonNullable<Json>,"task_id": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: never,"kind": string,"payload"?: NonNullable<Json>,"task_id": string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: never,"kind"?: string,"payload"?: NonNullable<Json>,"task_id"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "task_activity_task_id_user_id_fkey"
+      columns: ["task_id","user_id"]
+isOneToOne: false
+      referencedRelation: "tasks"
+      referencedColumns: ["id","user_id"]
+    }
                   ]
                 },"task_assignees": {
                   Row: {
