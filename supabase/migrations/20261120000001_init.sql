@@ -1,9 +1,9 @@
 -- ═════════════════════════════════════════════════════════════
 -- 0001 init: tasks table, RLS, and per-user sample-task seeding
 --
--- Grants: none needed. Supabase's default privileges already grant
--- table access in `public` to the `anon` / `authenticated` roles;
--- Row Level Security (below) is what restricts each user to their own rows.
+-- Grants: table privileges for `authenticated` are added in 0004_api_grants
+-- (this project does not auto-grant new tables). Row Level Security (below)
+-- is what restricts each user to their own rows.
 -- ═════════════════════════════════════════════════════════════
 
 -- ─────────────────────────────────────────────────────────────

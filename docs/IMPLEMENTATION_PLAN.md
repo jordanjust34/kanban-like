@@ -89,7 +89,14 @@ Also written in P0 (as built):
 
 Each brief below is the **scope**. The actual prompt adds: "Read `docs/DESIGN.md`, `docs/REQUIREMENTS.md` and this plan. Only edit the files you own. Run `npm run typecheck && npm run lint && npm test` before finishing. Report what you built, what you skipped, and any contract you think needs to change. Don't change frozen files yourself."
 
-### Phase 1 (2 agents in parallel)
+### Phase 1 (as run: main-session tooling, then 3 agents in parallel)
+
+> **Split at the user's request (2026-11-20).** The main session first committed the tooling scaffold: Vite 8 + React 19 + TS 7 strict, Tailwind v4, **oxlint** (the Vite template's default, used instead of ESLint), Prettier, Vitest, the `@/` alias, all runtime deps, and an `auth.ts` contract stub. Then three agents ran in parallel worktrees:
+> - **P1-ui:** tokens, globals, the `components/ui` kit, providers, the App shell (header, toolbar, skeleton/error states, offline banner), the placeholder `Board`, and all slot stubs.
+> - **P1-auth:** `lib/supabase.ts` (`VITE_SUPABASE_PUBLISHABLE_KEY`), `ensureSession`/`useSession` behind the fixed contract, tests, `.env.example`.
+> - **P1-schema:** what P1b below describes.
+>
+> The P1a text below is the original combined brief and is kept for reference.
 
 **P1a: Scaffold** (owns everything under `src/` except the frozen P0 files, plus root config)
 - Vite + React + TS strict; Tailwind v4 with DESIGN §6 tokens as CSS variables in `src/styles/tokens.css` (`[data-theme]`-ready, D14); Inter via `@fontsource-variable/inter`.
