@@ -1,0 +1,22 @@
+title = "kanban-like gitleaks config"
+
+# Start from gitleaks' built-in rule set and only add allowlist entries on top.
+[extend]
+useDefault = true
+
+# Legacy single-table allowlist syntax on purpose: it is understood both by the
+# gitleaks version bundled in gitleaks-action and by current gitleaks releases.
+# The regexes match against the detected *secret* (the default regexTarget), so
+# a real credential that merely sits next to one of these values is still flagged.
+[allowlist]
+description = "Supabase values that are public by design"
+regexes = [
+  # Supabase publishable key (VITE_SUPABASE_PUBLISHABLE_KEY). It ships in the
+  # client bundle of every visitor; data access is enforced by Postgres RLS,
+  # not by keeping this key secret. Secret/service-role keys (sb_secret_...)
+  # are NOT allowlisted.
+  '''^sb_publishable_[A-Za-z0-9_-]+$''',
+  # Supabase project URL (VITE_SUPABASE_URL), e.g. https://<ref>.supabase.co.
+  # Also shipped to every browser; it identifies the project but grants no access.
+  '''^https://[A-Za-z0-9-]+\.supabase\.co/?$''',
+]
