@@ -1,0 +1,84 @@
+/**
+ * Design tokens (DESIGN §6). Light theme on :root.
+ * A future dark theme only needs to override these variables under [data-theme='dark'];
+ * every component reads them through the Tailwind names mapped in globals.css.
+ */
+:root {
+  color-scheme: light;
+
+  /* Surfaces: board < column < card (§6.1 "hierarchy through surface") */
+  --bg-app: #f7f7f8;
+  --bg-column: #efeff1;
+  --bg-card: #ffffff;
+  --bg-hover: #f4f4f5; /* ghost-button / row hover on card surfaces */
+  --bg-overlay: rgb(24 24 27 / 0.32);
+
+  /* Lines */
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8; /* input hover, dashed drop zones */
+
+  /* Text */
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-subtle: #63636b; /* counts + meta on column surfaces: AA (>= 4.5:1) on --bg-column */
+  --text-muted: #a1a1aa; /* placeholders + decorative icons only: below AA for body text */
+  --text-on-accent: #ffffff;
+
+  /* Accent (Linear-esque indigo) */
+  --accent: #5e6ad2;
+  --accent-hover: #4f5bc4;
+  --accent-soft: #eef0fb;
+  --accent-text: #4752c4;
+
+  /* Semantic. Base values from §6.2; "-strong"/"-text" are darker steps for AA text and fills. */
+  --danger: #e5484d;
+  --danger-strong: #ce2c31;
+  --danger-soft: #fdecec;
+  --danger-text: #ce2c31;
+
+  --warning: #f5a524;
+  --warning-soft: #fef5e5;
+  --warning-text: #8f5300;
+
+  --success: #30a46c;
+  --success-soft: #e9f6ef;
+  --success-text: #18704a;
+
+  /* Status accents (mirror STATUSES in src/lib/domain.ts) */
+  --status-todo: #8b8d98;
+  --status-in-progress: #3e63dd;
+  --status-in-review: #8e4ec6;
+  --status-done: #30a46c;
+
+  /* Radius (§6.4) */
+  --radius-chip: 6px; /* chips, inputs */
+  --radius-control: 8px; /* cards, buttons */
+  --radius-panel: 12px; /* columns, sheets */
+
+  /* Elevation (§6.4) */
+  --elevation-card: 0 1px 2px rgb(0 0 0 / 0.06);
+  --elevation-card-hover: 0 2px 8px rgb(0 0 0 / 0.08);
+  --elevation-dragging: 0 12px 24px rgb(0 0 0 / 0.16);
+  --elevation-popover: 0 4px 16px rgb(0 0 0 / 0.1), 0 1px 3px rgb(0 0 0 / 0.06);
+
+  /* Motion (§6.1) */
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-fast: 150ms;
+  --motion-base: 200ms;
+
+  /* Board layout (§6.4, §7.7) */
+  --column-width: 300px;
+  --column-gutter: 16px;
+}
+
+@media (max-width: 1023.98px) {
+  :root {
+    --column-width: 280px;
+  }
+}
+
+@media (max-width: 639.98px) {
+  :root {
+    --column-width: 85vw;
+  }
+}
