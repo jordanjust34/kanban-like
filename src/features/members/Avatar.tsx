@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { cn } from '@/lib/cn';
 import { swatchColors } from '@/lib/swatch';
 import { initials, joinNames, type Member } from './model';
@@ -29,10 +29,12 @@ export function Avatar({
   member,
   size = 20,
   className,
+  style,
 }: {
   member: AvatarMember;
   size?: AvatarSize;
   className?: string;
+  style?: CSSProperties;
 }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const url = member.avatar_url && member.avatar_url !== failedUrl ? member.avatar_url : null;
@@ -47,7 +49,7 @@ export function Avatar({
         sizeClass[size],
         className,
       )}
-      style={{ backgroundColor: colors.background, color: colors.text }}
+      style={{ ...style, backgroundColor: colors.background, color: colors.text }}
     >
       {url ? (
         <img
@@ -100,8 +102,16 @@ export function AvatarStack({
   return (
     <span className={cn('inline-flex items-center', className)}>
       <span aria-hidden className="flex items-center -space-x-1">
-        {visible.map((member) => (
-          <Avatar key={member.id} member={member} size={size} className="ring-2 ring-card" />
+        {visible.map((member, i) => (
+          // Earlier avatars sit on top, so overlap hides the next avatar's left edge rather than
+          // clipping the right half of this one's initials.
+          <Avatar
+            key={member.id}
+            member={member}
+            size={size}
+            className="relative ring-2 ring-card"
+            style={{ zIndex: visible.length - i }}
+          />
         ))}
         {hidden.length > 0 && (
           <span
