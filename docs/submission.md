@@ -724,17 +724,18 @@ keys prevent linking to another user's task or member.
 detail sheet; a task can carry several, shown as tinted chips on the card, and the board can be
 filtered by label. Names are unique per user, enforced by a database constraint.
 
-<!-- TODO verify once P4-1 merges: activity log and comments UI description -->
-
-**Activity log.** The detail sheet shows a timeline of the task's history: created, moved between
-columns, fields edited, assignees and labels added or removed. It is written entirely by
+**Activity log.** The detail sheet shows a timeline of the task's history, e.g. "You moved from
+To Do → In Progress · 2 hours ago": created, moved between columns, fields edited, assignees and
+labels added or removed. It refreshes as soon as the task changes, without a reload. It is written entirely by
 `SECURITY DEFINER` triggers on `tasks`, `task_assignees` and `task_labels`; clients can only read
 `task_activity`, so history cannot be skipped or forged. Reordering within a column and the
 sample assignee and label links created at sign-up are deliberately not logged.
 
-**Comments.** The detail sheet has a comment thread, shown oldest-first with timestamps, stored
-in a separate `comments` table (1–2000 characters, owner-only RLS, cascade-deleted with the
-task).
+**Comments.** Comments appear in the same chronological feed as the activity (oldest first, with
+relative timestamps), like Linear. The composer at the bottom auto-grows and sends with
+⌘/Ctrl+Enter; comments are added optimistically and can be deleted after an inline
+confirmation. Cards show a comment count. They are stored in a separate `comments` table
+(1–2000 characters, owner-only RLS, cascade-deleted with the task).
 
 **Realtime multi-tab sync.** `tasks`, the two link tables and `comments` are published to
 Supabase Realtime. Each tab subscribes to changes on the guest's own rows and refetches the
