@@ -42,13 +42,6 @@ for (const [name, viewport] of [
     test.use({ viewport });
 
     test('has no axe violations', async ({ page }) => {
-      // TODO(a11y): real violation, `scrollable-region-focusable` (serious, WCAG 2.1.1) on
-      // `.board-scroller`. At 360px the columns overflow horizontally, but the placeholder board
-      // has nothing focusable inside, so keyboard users can't scroll to the other columns.
-      // Fix: make the scroller focusable and named (`tabIndex={0}` + `role="region"` +
-      // `aria-label="Board"`), or guarantee focusable content in every column. Remove this
-      // fixme once fixed: the desktop scan still runs and still gates CI.
-      test.fixme(name === 'mobile', 'scrollable-region-focusable on .board-scroller (mobile)');
       await mockSupabase(page);
       await page.goto('/');
       await waitForBoard(page);

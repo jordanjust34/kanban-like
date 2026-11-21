@@ -36,7 +36,7 @@ export function CardMenu({ task }: { task: Task }) {
         className={cn(
           'absolute top-2 right-2 flex size-6 items-center justify-center rounded-sm text-subtle',
           'opacity-0 transition-[opacity,background-color,color] duration-150',
-          'group-hover/card:opacity-100 group-focus-within/card:opacity-100 focus-visible:opacity-100',
+          'group-hover/sortable:opacity-100 group-focus-within/sortable:opacity-100 focus-visible:opacity-100',
           'hover:bg-black/5 hover:text-primary data-[state=open]:bg-black/5 data-[state=open]:text-primary data-[state=open]:opacity-100',
           'pointer-coarse:opacity-100',
         )}
