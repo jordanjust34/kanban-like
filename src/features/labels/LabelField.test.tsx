@@ -39,7 +39,7 @@ const task = makeTask('t1', 'todo', 1000);
 async function openPicker() {
   const user = userEvent.setup();
   render(<LabelField task={task} />);
-  await user.click(screen.getByRole('button', { name: 'Labels: Bug' }));
+  await user.click(screen.getByRole('button', { name: /^Labels:\s*Bug/ }));
   const dialog = await screen.findByRole('dialog', { name: 'Labels' });
   return { user, dialog };
 }
@@ -47,7 +47,7 @@ async function openPicker() {
 describe('LabelField', () => {
   it('shows the task chips on the trigger, or "Add label"', () => {
     const { unmount } = render(<LabelField task={task} />);
-    expect(screen.getByRole('button', { name: 'Labels: Bug' })).toHaveTextContent('Bug');
+    expect(screen.getByRole('button', { name: /^Labels:\s*Bug/ })).toHaveTextContent('Bug');
     unmount();
     render(<LabelField task={makeTask('t9', 'todo', 1000)} />);
     expect(screen.getByRole('button', { name: 'Add label' })).toHaveTextContent('Add label');

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { Fragment, useCallback, useRef, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { isTempId } from '@/features/tasks/taskList';
 import type { Task } from '@/features/tasks/types';
@@ -32,9 +32,6 @@ export function LabelField({ task }: { task: Task }) {
         <button
           type="button"
           disabled={disabled}
-          aria-label={
-            labels.length > 0 ? `Labels: ${labels.map((l) => l.name).join(', ')}` : 'Add label'
-          }
           className={cn(
             'flex min-h-8 w-full flex-wrap items-center gap-1 rounded-sm px-2 py-1.5 text-left text-[13px] leading-5',
             'transition-[background-color] duration-150 hover:bg-hover focus-visible:bg-hover',
@@ -42,8 +39,18 @@ export function LabelField({ task }: { task: Task }) {
             'disabled:pointer-events-none disabled:opacity-60',
           )}
         >
+          {/* Accessible name comes from the content ("Labels: Bug, Chore"), so it always
+              contains the visible chip text (axe: label-content-name-mismatch). */}
           {labels.length > 0 ? (
-            labels.map((l) => <LabelChip key={l.id} name={l.name} color={l.color} />)
+            <>
+              <span className="sr-only">Labels: </span>
+              {labels.map((l, i) => (
+                <Fragment key={l.id}>
+                  <LabelChip name={l.name} color={l.color} />
+                  {i < labels.length - 1 && <span className="sr-only">, </span>}
+                </Fragment>
+              ))}
+            </>
           ) : (
             <span className="text-subtle">Add label</span>
           )}
