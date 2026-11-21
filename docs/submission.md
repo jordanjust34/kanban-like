@@ -1,6 +1,6 @@
 # Task Manager — Assessment Submission
 
-Name: TODO
+Name: Task Manager
 
 ## 1. Overview and design decisions
 
@@ -36,15 +36,13 @@ The main design decisions:
 
 ## 2. Live frontend URL
 
-https://kanban-like.vercel.app
+[https://www.jordicai.com](https://www.jordicai.com)
 
 ## 3. GitHub repository
 
-https://github.com/jordanjust34/kanban-like
+[https://github.com/jordanjust34/kanban-like](https://github.com/jordanjust34/kanban-like)
 
 ## 4. Database schema (SQL)
-
-Screenshot of the Supabase table editor: TODO (add before export)
 
 Seven tables, all with Row Level Security and an owner-only policy:
 

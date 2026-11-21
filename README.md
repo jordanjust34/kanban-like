@@ -1,15 +1,61 @@
 # Kanban Task Board
 
-A polished, Linear-style Kanban board: drag tasks between four columns, with instant optimistic
-updates, guest accounts and Postgres Row Level Security as the only security boundary.
+A polished, Linear-style Kanban board for managing a small team's work: drag tasks between
+columns, assign teammates, tag with labels, filter, comment, and see every change in an activity
+timeline. Built with React + TypeScript on Supabase, with Postgres Row Level Security as the only
+security boundary.
 
-- **Live demo:** https://kanban-like.vercel.app
-- **Final document (draft):** [docs/submission.md](docs/submission.md)
-- **Design and plan:** [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) ·
-  [docs/DESIGN.md](docs/DESIGN.md) · [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)
+**[Live demo → jordicai.com](https://www.jordicai.com)**. No sign-up: the
+first visit creates a private guest board with sample tasks, teammates and labels.
 
-No sign-up: the first visit creates an anonymous guest session, seeded with sample tasks,
-members and labels, so every feature is visible right away.
+## At a glance
+
+|                |                                                                                                                                          |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **What it is** | A full-featured task board: drag-and-drop, assignees, labels, due dates, search and filters, comments, activity log, multi-tab live sync |
+| **Frontend**   | React 19, TypeScript (strict), Tailwind CSS v4 design tokens, Radix UI, dnd-kit, TanStack Query                                          |
+| **Backend**    | Supabase: Postgres with RLS, anonymous Auth, triggers, Realtime. No custom server                                                        |
+| **Quality**    | 250+ unit/component tests, automated accessibility (axe) and data-isolation checks, all run in CI on every pull request                  |
+| **Hosting**    | Vercel (frontend) + Supabase free tier                                                                                                   |
+
+### Try it in a minute
+
+1. Open the [live demo](https://jordicai.com). A sample board loads.
+2. **Drag** a card to another column (or focus it and press `Space`, arrow keys, `Space`).
+   Reload: it stays put.
+3. **Click** a card to open the detail sheet. Change its status, assign a teammate, add a label
+   and leave a comment, then watch each change appear in the activity timeline.
+4. Press `/` and type to **search**, or filter by priority, assignee or label. The filters live
+   in the URL, so you can share or bookmark the view.
+5. Open the board in a **second tab** and make a change: the other tab updates in about a second.
+6. **Delete** a card and hit **Undo** in the toast.
+
+### Engineering highlights
+
+- **Instant, safe UI.** Every write is optimistic: the board updates immediately, and on failure
+  only the affected item rolls back, with a Retry toast. Assignee, label and comment writes are
+  serialized, so quick toggles can't reach the server out of order.
+- **Security in the database, not the client.** Owner-only RLS on every table, `user_id` set by
+  the database, and composite foreign keys so a row can never link to another user's data, even
+  with a guessed id. The activity log is written only by database triggers, so it can't be
+  forged. A script signs in two real guests and proves the isolation, and CI runs it on every
+  schema change.
+- **Cheap reordering.** Fractional positions mean a drag-and-drop writes exactly one row.
+- **Accessible by default.** Keyboard and touch drag-and-drop, screen-reader announcements,
+  visible focus, and WCAG AA contrast. Palette colors are darkened automatically when they'd fail
+  contrast. axe runs in CI against the board, dialogs and mobile layout.
+- **Designed, not defaulted.** A small token-based design system (color, type scale, elevation,
+  motion) with deliberate loading, empty, error, offline and "no results" states, responsive
+  down to 360 px.
+
+### How it was built
+
+The project started from written requirements, a design doc and a phased implementation plan
+(all in [`docs/`](docs)). Each phase landed as its own pull request, gated by CI (types, lint,
+tests, accessibility, CodeQL, secret scanning, database checks) and verified in a real browser
+against the live database. [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) records
+the phases, decisions and deviations; [`docs/DESIGN.md`](docs/DESIGN.md) has the schema, security
+model and design system.
 
 ## Features
 
@@ -29,7 +75,7 @@ members and labels, so every feature is visible right away.
   banner.
 - Keyboard shortcuts: `C` quick-add, `/` focus search, `Esc` close/clear, `Enter` open card.
 
-### Advanced features from the brief
+### Feature checklist
 
 | Feature                    | Built | Notes                                                                         |
 | -------------------------- | :---: | ----------------------------------------------------------------------------- |
@@ -44,7 +90,7 @@ members and labels, so every feature is visible right away.
 Also: **Realtime multi-tab sync**. Other tabs of the same guest refetch when tasks, assignees,
 labels or comments change.
 
-Dark mode was considered and deliberately dropped (light theme only).
+Out of scope by choice: dark mode, real multi-user accounts, custom columns.
 
 ## Tech stack
 
