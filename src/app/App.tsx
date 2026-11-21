@@ -1,4 +1,5 @@
 import { Board } from '@/features/board/Board';
+import { RealtimeSync } from '@/features/realtime/RealtimeSync';
 import { TaskSheetHost } from '@/features/tasks/TaskSheetHost';
 import { ErrorState } from '@/components/ui';
 import { useSession } from './auth';
@@ -22,8 +23,15 @@ function SessionGate() {
           />
         </div>
       );
-    case 'ready':
-      return <Board />;
+    case 'ready': {
+      const userId = session.session.user?.id;
+      return (
+        <>
+          {userId && <RealtimeSync userId={userId} />}
+          <Board />
+        </>
+      );
+    }
   }
 }
 
