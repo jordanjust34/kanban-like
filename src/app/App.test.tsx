@@ -3,10 +3,18 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { Session } from '@supabase/supabase-js';
 import { useSession } from '@/app/auth';
+import type { useCreateTask, useDeleteTask, useMoveTask } from '@/features/tasks/api';
 import { App } from './App';
 import { Providers } from './providers';
 
 vi.mock('@/app/auth', () => ({ useSession: vi.fn<typeof useSession>() }));
+// The board's data hooks are covered in features/board; here they return an empty, loaded board.
+vi.mock('@/features/tasks/api', () => ({
+  useTasks: () => ({ data: [], isError: false, isFetching: false }),
+  useCreateTask: () => vi.fn<ReturnType<typeof useCreateTask>>(),
+  useMoveTask: () => vi.fn<ReturnType<typeof useMoveTask>>(),
+  useDeleteTask: () => vi.fn<ReturnType<typeof useDeleteTask>>(),
+}));
 
 const mockedUseSession = vi.mocked(useSession);
 const retry = vi.fn<() => void>();
