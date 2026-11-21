@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BoardSkeleton } from '@/app/BoardSkeleton';
 import { ErrorState } from '@/components/ui';
 import { STATUSES, type Status } from '@/lib/domain';
+import { NoResults } from '@/features/filters/NoResults';
+import { clearFilters } from '@/features/filters/useFilterState';
 import { useVisibleTasks } from '@/features/filters/useVisibleTasks';
 import { useCreateTask, useDeleteTask, useMoveTask, useTasks } from '@/features/tasks/api';
 import { describeError } from '@/features/tasks/errors';
@@ -83,6 +85,7 @@ function BoardView({ tasks }: { tasks: Task[] }) {
   );
 
   const isEmptyBoard = tasks.length === 0;
+  if (isFiltering && visible.length === 0) return <NoResults onClear={clearFilters} />;
 
   return (
     <BoardActionsContext.Provider value={actions}>
@@ -99,7 +102,14 @@ function BoardView({ tasks }: { tasks: Task[] }) {
           screenReaderInstructions: SCREEN_READER_INSTRUCTIONS,
         }}
       >
-        <div className="board-scroller" data-dragging={dnd.isDragging || undefined}>
+        <div
+          className="board-scroller"
+          data-dragging={dnd.isDragging || undefined}
+          // Keyboard users must be able to scroll the columns on narrow screens (axe: scrollable-region-focusable).
+          tabIndex={0}
+          role="group"
+          aria-label="Task board"
+        >
           {STATUSES.map((status) => (
             <Column
               key={status.value}

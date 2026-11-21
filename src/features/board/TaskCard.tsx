@@ -45,12 +45,7 @@ export const TaskCardBody = memo(function TaskCardBody({
         <CardLabels task={task} />
       </div>
 
-      <h3
-        id={`task-title-${task.id}`}
-        className="line-clamp-2 pr-6 text-card-title break-words text-primary"
-      >
-        {task.title}
-      </h3>
+      <h3 className="line-clamp-2 pr-6 text-card-title break-words text-primary">{task.title}</h3>
 
       <div className="mt-2.5 flex min-h-5 flex-wrap items-center gap-x-2.5 gap-y-1.5">
         <PriorityIndicator priority={task.priority} />
@@ -61,12 +56,10 @@ export const TaskCardBody = memo(function TaskCardBody({
         </div>
       </div>
 
-      {saving ? (
+      {saving && (
         <span className="absolute top-3 right-3 text-subtle" title="Saving…">
           <Spinner size={12} label="Saving" />
         </span>
-      ) : (
-        !overlay && <CardMenu task={task} />
       )}
     </div>
   );
@@ -75,7 +68,15 @@ export const TaskCardBody = memo(function TaskCardBody({
 /** Sortable wrapper: owns the drag handle, focus, click / Enter to open, and the placeholder. */
 export const SortableTaskCard = memo(function SortableTaskCard({ task }: { task: Task }) {
   const saving = isTempId(task.id);
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: task.id,
     data: { type: 'task', status: task.status },
     disabled: saving,
@@ -90,34 +91,42 @@ export const SortableTaskCard = memo(function SortableTaskCard({ task }: { task:
     listeners?.onKeyDown?.(event);
   };
 
+  // The menu button is a sibling of the draggable `role="button"` element, not a child, so no
+  // interactive control is nested inside another (axe: nested-interactive). The card's accessible
+  // name comes from its content (title, priority, due date), matching what is visible.
   return (
     <div
       ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      onKeyDown={onKeyDown}
-      onClick={() => {
-        if (!saving) openTask(task.id);
-      }}
-      aria-labelledby={`task-title-${task.id}`}
-      aria-disabled={saving || undefined}
-      data-task-id={task.id}
       style={{ transform: CSS.Translate.toString(transform), transition }}
-      className={cn(
-        'group/sortable relative shrink-0 touch-manipulation rounded-md outline-offset-2 select-none',
-        saving ? 'cursor-progress opacity-75' : 'cursor-grab active:cursor-grabbing',
-      )}
+      className="group/sortable relative shrink-0"
     >
-      {isDragging ? (
-        <div aria-hidden className="relative">
-          <div className="invisible">
-            <TaskCardBody task={task} />
+      <div
+        ref={setActivatorNodeRef}
+        {...attributes}
+        {...listeners}
+        onKeyDown={onKeyDown}
+        onClick={() => {
+          if (!saving) openTask(task.id);
+        }}
+        aria-disabled={saving || undefined}
+        data-task-id={task.id}
+        className={cn(
+          'touch-manipulation rounded-md outline-offset-2 select-none',
+          saving ? 'cursor-progress opacity-75' : 'cursor-grab active:cursor-grabbing',
+        )}
+      >
+        {isDragging ? (
+          <div aria-hidden className="relative">
+            <div className="invisible">
+              <TaskCardBody task={task} />
+            </div>
+            <div className="absolute inset-0 rounded-md border-[1.5px] border-dashed border-border-strong bg-black/[0.025]" />
           </div>
-          <div className="absolute inset-0 rounded-md border-[1.5px] border-dashed border-border-strong bg-black/[0.025]" />
-        </div>
-      ) : (
-        <TaskCardBody task={task} />
-      )}
+        ) : (
+          <TaskCardBody task={task} />
+        )}
+      </div>
+      {!isDragging && !saving && <CardMenu task={task} />}
     </div>
   );
 });
