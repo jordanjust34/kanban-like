@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Typecheck, lint, format, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - name: Forbidden files
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Tracked .env / .env.* files (any directory, except .env.example) and
+          # docs/*.pdf must never be committed. `|| true` because grep exits 1
+          # when nothing matches, which is the passing case.
+          offending="$(git ls-files \
+            | { grep -E '(^|/)\.env(\..+)?$|^docs/.*\.[pP][dD][fF]$' || true; } \
+            | { grep -vE '(^|/)\.env\.example$' || true; })"
+          if [[ -n "$offending" ]]; then
+            echo "::error::Forbidden files are tracked by git:"
+            printf '%s\n' "$offending"
+            exit 1
+          fi
+          echo "No forbidden files tracked."
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npx oxlint --deny-warnings
+      - name: Format
+        run: npm run format:check
+      - name: Unit tests
+        run: npm test
+      - name: Build
+        run: npm run build
