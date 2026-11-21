@@ -2,7 +2,7 @@
 -- 0003 labels: labels, task labels, RLS, sample seeding
 --
 -- Same composite-FK pattern as task_assignees (see 0002).
--- Grants: none needed (Supabase default privileges; RLS restricts rows).
+-- Grants: added in 0004_api_grants (RLS restricts rows).
 -- ═════════════════════════════════════════════════════════════
 
 create table public.labels (

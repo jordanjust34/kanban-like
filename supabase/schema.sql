@@ -18,9 +18,9 @@
 -- ═════════════════════════════════════════════════════════════
 -- 0001 init: tasks table, RLS, and per-user sample-task seeding
 --
--- Grants: none needed. Supabase's default privileges already grant
--- table access in `public` to the `anon` / `authenticated` roles;
--- Row Level Security (below) is what restricts each user to their own rows.
+-- Grants: table privileges for `authenticated` are added in 0004_api_grants
+-- (this project does not auto-grant new tables). Row Level Security (below)
+-- is what restricts each user to their own rows.
 -- ═════════════════════════════════════════════════════════════
 
 -- ─────────────────────────────────────────────────────────────
@@ -153,7 +153,7 @@ create trigger seed_10_tasks
 -- to a member owned by the same user. FK checks bypass RLS, so without
 -- this a user who guessed another user's task id could attach rows to it.
 --
--- Grants: none needed (Supabase default privileges; RLS restricts rows).
+-- Grants: added in 0004_api_grants (RLS restricts rows).
 -- ═════════════════════════════════════════════════════════════
 
 create table public.team_members (
@@ -253,7 +253,7 @@ create trigger seed_20_members
 -- 0003 labels: labels, task labels, RLS, sample seeding
 --
 -- Same composite-FK pattern as task_assignees (see 0002).
--- Grants: none needed (Supabase default privileges; RLS restricts rows).
+-- Grants: added in 0004_api_grants (RLS restricts rows).
 -- ═════════════════════════════════════════════════════════════
 
 create table public.labels (
@@ -342,3 +342,21 @@ revoke execute on function public.seed_new_user_labels() from public, anon, auth
 create trigger seed_30_labels
   after insert on auth.users
   for each row execute function public.seed_new_user_labels();
+
+-- ═════════════════════════════════════════════════════════════
+-- 0004 API grants
+--
+-- This project does NOT auto-grant new `public` tables to the API roles
+-- (the earlier migrations' "no grants needed" comments were wrong), so
+-- PostgREST returned "permission denied". Grant table privileges to
+-- `authenticated` only: anonymous guests sign in and get that role.
+-- `anon` (no session) gets nothing. RLS still limits every row to its owner.
+-- ═════════════════════════════════════════════════════════════
+
+grant select, insert, update, delete on table
+  public.tasks,
+  public.team_members,
+  public.task_assignees,
+  public.labels,
+  public.task_labels
+to authenticated;

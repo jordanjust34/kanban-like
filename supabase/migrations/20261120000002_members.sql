@@ -5,7 +5,7 @@
 -- to a member owned by the same user. FK checks bypass RLS, so without
 -- this a user who guessed another user's task id could attach rows to it.
 --
--- Grants: none needed (Supabase default privileges; RLS restricts rows).
+-- Grants: added in 0004_api_grants (RLS restricts rows).
 -- ═════════════════════════════════════════════════════════════
 
 create table public.team_members (
