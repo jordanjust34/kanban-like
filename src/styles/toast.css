@@ -1,0 +1,77 @@
+/*
+ * Sonner toasts, restyled with our tokens so they read as part of the app.
+ * Sonner injects unlayered CSS, so these rules are unlayered too and use one extra
+ * attribute (`[data-sonner-toaster]`) to win on specificity.
+ */
+[data-sonner-toaster][data-sonner-theme] {
+  --normal-bg: var(--bg-card);
+  --normal-bg-hover: var(--bg-hover);
+  --normal-border: var(--border);
+  --normal-border-hover: var(--border-strong);
+  --normal-text: var(--text-primary);
+  --border-radius: var(--radius-control);
+  font-family: var(--font-sans);
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] {
+  padding: 12px 14px;
+  gap: 10px;
+  box-shadow: var(--elevation-popover);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] [data-title] {
+  font-weight: 500;
+  line-height: 20px;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] [data-description] {
+  color: var(--text-secondary);
+  line-height: 18px;
+}
+
+/* Status icons get their meaning color; the toast surface stays neutral (richColors off). */
+[data-sonner-toaster] [data-sonner-toast][data-type='success'] [data-icon] {
+  color: var(--success);
+}
+[data-sonner-toaster] [data-sonner-toast][data-type='error'] [data-icon] {
+  color: var(--danger);
+}
+[data-sonner-toaster] [data-sonner-toast][data-type='warning'] [data-icon] {
+  color: var(--warning);
+}
+[data-sonner-toaster] [data-sonner-toast][data-type='info'] [data-icon] {
+  color: var(--accent);
+}
+
+/* Action ("Retry", "Undo") looks like our small primary button; cancel like ghost. */
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] [data-button] {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--radius-chip);
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  transition: background-color var(--motion-fast) var(--motion-ease);
+}
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] [data-button]:hover {
+  background: var(--accent-hover);
+}
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] [data-cancel] {
+  background: transparent;
+  color: var(--text-secondary);
+}
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] [data-cancel]:hover {
+  background: rgb(0 0 0 / 0.05);
+  color: var(--text-primary);
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-button]:focus-visible,
+[data-sonner-toaster] [data-sonner-toast] [data-close-button]:focus-visible,
+[data-sonner-toaster] [data-sonner-toast]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: var(--elevation-popover);
+}

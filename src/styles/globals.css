@@ -1,1 +1,217 @@
 @import 'tailwindcss';
+@import './tokens.css';
+@import './toast.css';
+
+/*
+ * Tailwind names for the design tokens. `inline` makes utilities reference the raw token
+ * variables (e.g. `bg-card` → `var(--bg-card)`), so a `[data-theme]` override re-themes
+ * everything at runtime. Token names in tokens.css avoid Tailwind's own namespaces
+ * (--radius-*, --shadow-*, --ease-*) so nothing resolves to itself.
+ */
+@theme inline {
+  --font-sans:
+    'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Surfaces */
+  --color-app: var(--bg-app);
+  --color-column: var(--bg-column);
+  --color-card: var(--bg-card);
+  --color-hover: var(--bg-hover);
+  --color-overlay: var(--bg-overlay);
+
+  /* Lines */
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  /* Text */
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-subtle: var(--text-subtle);
+  --color-muted: var(--text-muted);
+  --color-on-accent: var(--text-on-accent);
+
+  /* Accent + semantic */
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-text: var(--accent-text);
+  --color-danger: var(--danger);
+  --color-danger-strong: var(--danger-strong);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-text: var(--danger-text);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-text: var(--warning-text);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-text: var(--success-text);
+
+  /* Status accents */
+  --color-status-todo: var(--status-todo);
+  --color-status-in-progress: var(--status-in-progress);
+  --color-status-in-review: var(--status-in-review);
+  --color-status-done: var(--status-done);
+
+  /* Radius: rounded-sm 6 (chips, inputs) · rounded-md 8 (cards, buttons) · rounded-lg 12 */
+  --radius-sm: var(--radius-chip);
+  --radius-md: var(--radius-control);
+  --radius-lg: var(--radius-panel);
+
+  /* Elevation */
+  --shadow-card: var(--elevation-card);
+  --shadow-card-hover: var(--elevation-card-hover);
+  --shadow-dragging: var(--elevation-dragging);
+  --shadow-popover: var(--elevation-popover);
+
+  /* Motion */
+  --ease-out: var(--motion-ease);
+  --default-transition-duration: var(--motion-fast);
+  --default-transition-timing-function: var(--motion-ease);
+
+  /* Type scale (DESIGN §6.3) */
+  --text-page-title: 20px;
+  --text-page-title--line-height: 28px;
+  --text-page-title--font-weight: 600;
+  --text-page-title--letter-spacing: -0.015em;
+
+  --text-column-header: 13px;
+  --text-column-header--line-height: 20px;
+  --text-column-header--font-weight: 600;
+  --text-column-header--letter-spacing: -0.01em;
+
+  --text-card-title: 14px;
+  --text-card-title--line-height: 20px;
+  --text-card-title--font-weight: 500;
+
+  --text-body: 14px;
+  --text-body--line-height: 22px;
+  --text-body--font-weight: 400;
+
+  --text-meta: 12px;
+  --text-meta--line-height: 16px;
+  --text-meta--font-weight: 500;
+
+  /* Skeleton shimmer */
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+
+  @keyframes shimmer {
+    0% {
+      background-position: 100% 0;
+    }
+    100% {
+      background-position: -100% 0;
+    }
+  }
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  /* One focus ring for the whole app: keyboard focus only, never on mouse click. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+}
+
+@utility tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Shimmering placeholder block. Holds still for people who ask for reduced motion. */
+@utility skeleton {
+  /* Translucent base so it reads on cards and on column surfaces alike. */
+  background-color: color-mix(in srgb, var(--text-primary) 7%, transparent);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--bg-card) 60%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/* Thin, quiet scrollbar for scroll areas. */
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+/*
+ * Board layout (DESIGN §6.4, §7.7). Shared by the board, its skeleton and anything else that
+ * lays out columns: 300px columns ≥ 1024, 280px 640–1023 (horizontal scroll), 85vw with
+ * scroll-snap below 640 so one column fills the screen and the next one peeks in.
+ */
+@utility board-scroller {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--column-gutter);
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 20px 24px 24px;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+
+  @media (max-width: 639.98px) {
+    padding: 12px 16px 16px;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 16px;
+  }
+}
+
+/* Set `--status-accent` on the element for the 2px top bar. */
+@utility board-column {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: var(--column-width);
+  max-height: 100%;
+  border-radius: var(--radius-panel);
+  background-color: var(--bg-column);
+  box-shadow: inset 0 2px 0 var(--status-accent, transparent);
+  scroll-snap-align: start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
