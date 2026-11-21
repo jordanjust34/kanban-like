@@ -75,7 +75,7 @@ describe('Board', () => {
     expect(
       within(screen.getByRole('region', { name: 'In Review' })).getByLabelText('0 tasks'),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Fix login bug' })).toHaveTextContent('High');
+    expect(screen.getByRole('button', { name: /^Fix login bug/ })).toHaveTextContent('High');
   });
 
   it('shows a hint in empty columns', () => {
@@ -92,7 +92,7 @@ describe('Board', () => {
   it('opens the task from a card click and from Enter', async () => {
     mockTasks({ data: [makeTask('a', 'todo', 1000, { title: 'Fix login bug' })] });
     renderBoard();
-    const card = screen.getByRole('button', { name: 'Fix login bug' });
+    const card = screen.getByRole('button', { name: /^Fix login bug/ });
 
     await userEvent.click(card);
     expect(new URLSearchParams(window.location.search).get('task')).toBe('a');

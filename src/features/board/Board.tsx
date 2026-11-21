@@ -102,7 +102,14 @@ function BoardView({ tasks }: { tasks: Task[] }) {
           screenReaderInstructions: SCREEN_READER_INSTRUCTIONS,
         }}
       >
-        <div className="board-scroller" data-dragging={dnd.isDragging || undefined}>
+        <div
+          className="board-scroller"
+          data-dragging={dnd.isDragging || undefined}
+          // Keyboard users must be able to scroll the columns on narrow screens (axe: scrollable-region-focusable).
+          tabIndex={0}
+          role="group"
+          aria-label="Task board"
+        >
           {STATUSES.map((status) => (
             <Column
               key={status.value}
