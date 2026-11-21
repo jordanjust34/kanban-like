@@ -6,7 +6,7 @@ describe('swatchColors', () => {
   it('gives every palette color AA-contrast text on its tint', () => {
     for (const hex of SWATCHES) {
       const { background, text } = swatchColors(hex);
-      expect(contrastRatio(text, background), hex).toBeGreaterThanOrEqual(4.5);
+      expect({ hex, ratio: contrastRatio(text, background) >= 4.5 }).toEqual({ hex, ratio: true });
     }
   });
 
@@ -15,6 +15,6 @@ describe('swatchColors', () => {
   });
 
   it('rejects invalid input', () => {
-    expect(() => swatchColors('blue')).toThrow();
+    expect(() => swatchColors('blue')).toThrow('Invalid hex color');
   });
 });

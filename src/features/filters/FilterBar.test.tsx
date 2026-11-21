@@ -4,6 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FilterBar } from './FilterBar';
 import { NoResults } from './NoResults';
 
+// The members/labels filter groups call data hooks that need a QueryClient + session; these
+// tests cover the filter framework itself, so only the built-in priority group is registered.
+vi.mock('@/features/members/filter', () => ({ assigneeFilterGroup: null }));
+vi.mock('@/features/labels/filter', () => ({ labelFilterGroup: null }));
+
 const params = () => new URLSearchParams(window.location.search);
 
 function setUrl(search: string) {

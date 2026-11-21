@@ -1,8 +1,13 @@
 import { act, renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { makeTask } from '@/features/tasks/testUtils';
 import { setSearchParams } from '@/lib/urlState';
 import { useVisibleTasks } from './useVisibleTasks';
+
+// The members/labels filter groups call data hooks that need a QueryClient + session; these
+// tests cover the filter framework itself, so only the built-in priority group is registered.
+vi.mock('@/features/members/filter', () => ({ assigneeFilterGroup: null }));
+vi.mock('@/features/labels/filter', () => ({ labelFilterGroup: null }));
 
 const TASKS = [
   makeTask('a', 'todo', 1000, { title: 'Fix login bug', priority: 'high' }),
