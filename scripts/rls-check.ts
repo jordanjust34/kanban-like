@@ -211,9 +211,77 @@ async function main(): Promise<void> {
     // ── A is unaffected ──
     const aAfter = await snapshot(a.client);
     check("A's data is unchanged after B's attempts", fingerprint(aAfter) === fingerprint(aBefore));
+
+    await checkActivityAndComments(a, b, aTask.id);
   } finally {
     await Promise.all(guests.map((g) => g.client.auth.signOut()));
   }
+}
+
+/**
+ * Migration 0006: comments are owner-only; the activity log is written only by triggers, which
+ * must log the right events, skip position-only moves, and never block a cascading delete.
+ */
+async function checkActivityAndComments(a: Guest, b: Guest, aTaskId: string): Promise<void> {
+  type ActivityRow = { kind: string };
+  const seeded = await selectAll<ActivityRow>(b.client, 'task_activity', 'kind');
+  check(
+    "Seeding logs only one 'created' activity per task",
+    seeded.length === EXPECTED.tasks && seeded.every((r) => r.kind === 'created'),
+    `${seeded.length} rows`,
+  );
+
+  const { data: task, error: createError } = await b.client
+    .from('tasks')
+    .insert({ title: 'RLS check: activity probe' })
+    .select('id')
+    .single();
+  if (createError || !task) {
+    check('B can create a task for the activity checks', false, createError?.message ?? '');
+    return;
+  }
+  const [member] = await selectAll<IdRow>(b.client, 'team_members', 'id, user_id');
+  const [label] = await selectAll<IdRow>(b.client, 'labels', 'id, user_id');
+
+  await b.client.from('tasks').update({ status: 'in_review', priority: 'high' }).eq('id', task.id);
+  await b.client.from('tasks').update({ position: 123456 }).eq('id', task.id);
+  if (member)
+    await b.client.from('task_assignees').insert({ task_id: task.id, member_id: member.id });
+  if (label) await b.client.from('task_labels').insert({ task_id: task.id, label_id: label.id });
+  const comment = await b.client.from('comments').insert({ task_id: task.id, body: 'Looks good' });
+  check('B can comment on its own task', comment.error === null, comment.error?.message ?? '');
+
+  const { data: activity } = await b.client
+    .from('task_activity')
+    .select('kind')
+    .eq('task_id', task.id)
+    .order('id');
+  const kinds = (activity ?? []).map((r: ActivityRow) => r.kind).join(',');
+  check(
+    'Activity logs status, edits, assignee and label changes (not position-only moves)',
+    kinds === 'created,status_changed,edited,assignee_added,label_added',
+    kinds,
+  );
+
+  await expectRejected(
+    'Clients cannot write activity rows directly',
+    b.client.from('task_activity').insert({ task_id: task.id, user_id: b.userId, kind: 'created' }),
+  );
+  await expectRejected(
+    "B commenting on A's task is rejected",
+    b.client.from('comments').insert({ task_id: aTaskId, body: 'Not mine' }),
+  );
+  const aActivity = await b.client.from('task_activity').select('id').eq('task_id', aTaskId);
+  check("B cannot read A's activity", (aActivity.data ?? []).length === 0);
+  const aComments = await a.client.from('comments').select('id').eq('task_id', task.id);
+  check("A cannot read B's comments", (aComments.data ?? []).length === 0);
+
+  const deleted = await b.client.from('tasks').delete().eq('id', task.id).select('id');
+  check(
+    'Deleting a task with links, comments and activity succeeds',
+    deleted.error === null && deleted.data?.length === 1,
+    deleted.error?.message ?? '',
+  );
 }
 
 try {
