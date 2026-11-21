@@ -15,7 +15,7 @@ Build a polished, Kanban-style task board where a user can create tasks, drag th
 | Cost | $0 — free tiers only (Supabase, Vercel, GitHub) |
 | Required tech | Supabase (DB + Auth), GitHub |
 | Chosen stack | React + TypeScript (web), Supabase called directly from the frontend. Go backend is optional and **not planned** (see DESIGN.md §9) |
-| Secrets | Only the public anon key in the frontend. No service-role key anywhere. No secrets committed |
+| Secrets | Only the public (publishable) key in the frontend. No service-role key anywhere. No secrets committed |
 
 Priority key: **Must** = required by the brief · **Should** = advanced feature we plan to build · **Could** = build if time allows.
 
@@ -92,10 +92,10 @@ All advanced-feature tables must also be protected by RLS (owner-only).
 |---|---|---|
 | NFR-1 | **Design (top priority)** | Cohesive color palette and typography system; clear hierarchy between columns and cards; smooth drag-and-drop; polished empty/loading/error states. See DESIGN.md §6 |
 | NFR-2 | Responsive | Usable on mobile (≥ 360 px wide) and desktop |
-| NFR-3 | Security | RLS on every table; anon key only; `.env` git-ignored; `.env.example` committed |
+| NFR-3 | Security | RLS on every table; publishable key only; `.env` git-ignored; `.env.example` committed |
 | NFR-4 | Performance | Board interactive in < 2 s on a normal connection; drag at 60 fps |
 | NFR-5 | Accessibility | Keyboard-operable drag-and-drop, visible focus rings, WCAG AA contrast, labelled controls |
-| NFR-6 | Code quality | TypeScript strict mode, ESLint + Prettier, small focused modules, typed DB access |
+| NFR-6 | Code quality | TypeScript strict mode, oxlint + Prettier, small focused modules, typed DB access |
 
 ---
 
