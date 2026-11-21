@@ -106,6 +106,7 @@ All advanced-feature tables must also be protected by RLS (owner-only).
 - Custom / user-defined columns
 - Go backend API
 - Native mobile app
+- Dark mode (light theme only)
 
 ---
 

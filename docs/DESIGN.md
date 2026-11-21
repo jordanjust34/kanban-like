@@ -34,7 +34,7 @@ Reviewers look for:
 | Concern | Choice | Why |
 |---|---|---|
 | Build | Vite + React 18 + TypeScript (strict) | Fast dev loop, zero config, static output for Vercel |
-| Styling | Tailwind CSS with design tokens as CSS variables | Consistent spacing and color scale; tokens enable dark mode later |
+| Styling | Tailwind CSS with design tokens as CSS variables | Consistent spacing and color scale in one place |
 | UI primitives | Radix UI (Dialog, Popover, DropdownMenu, Tooltip) | Accessible, unstyled, so the look stays ours |
 | Drag and drop | `@dnd-kit/core` + `@dnd-kit/sortable` | Keyboard and touch sensors, `DragOverlay`, good performance. `react-beautiful-dnd` is deprecated |
 | Server state | TanStack Query | Caching, optimistic updates with rollback, retry, loading/error flags |
@@ -387,7 +387,7 @@ State lives in URL search params (`?q=login&priority=high&label=<id>&assignee=<i
 **Label / member palette** (user picks from 8 swatches; chips use a 12 % tint background + full-strength text):
 `#E5484D` `#F76B15` `#F5A524` `#30A46C` `#12A594` `#3E63DD` `#8E4EC6` `#D6409F`
 
-Dark theme *(Could)*: same token names, overridden under `[data-theme="dark"]`.
+Light theme only. Dark mode is out of scope (D14).
 
 ### 6.3 Typography
 
@@ -531,7 +531,7 @@ Compact pill group in the header: **Total**, **Done** (with % and a thin progres
 | D11 | Seeding via `AFTER INSERT ON auth.users` trigger (`SECURITY DEFINER`), never client-side |
 | D12 | Delete = immediate optimistic removal + 5 s **Undo** toast; the DB delete is sent when the toast expires |
 | D13 | Per-column quick-add (title, Enter) **and** a header "New task" dialog with all fields |
-| D14 | Light theme only; tokens structured so dark mode can be added last |
+| D14 | Light theme only. Dark mode dropped from scope (2026-11-21) |
 | D15 | Fixed board name, no settings UI: **"Next Play · Sprint Board"** |
 
 ### Seed data (D9/D11)
