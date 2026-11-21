@@ -136,7 +136,7 @@ function GroupOptions({ state }: { state: FilterGroupState }) {
         </button>
       </div>
       {options.length === 0 ? (
-        <p className="px-2 py-1.5 text-meta text-muted">Nothing to filter by yet</p>
+        <p className="px-2 py-1.5 text-meta text-subtle">Nothing to filter by yet</p>
       ) : (
         <ul role="group" aria-labelledby={headingId}>
           {options.map((option) => (

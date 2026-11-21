@@ -310,7 +310,7 @@ export function DueDateInput({
           aria-hidden
           className={cn(
             'pointer-events-none absolute inset-y-0 left-7 flex items-center truncate tabular-nums',
-            value ? 'text-inherit' : 'text-muted',
+            value ? 'text-inherit' : 'text-subtle',
           )}
         >
           {value ? formatDueDate(value) : placeholder}
