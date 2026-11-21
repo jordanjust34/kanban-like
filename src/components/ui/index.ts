@@ -8,3 +8,4 @@ export { Select, type SelectProps } from './Select';
 export { Skeleton } from './Skeleton';
 export { Spinner } from './Spinner';
 export { Textarea, type TextareaProps } from './Textarea';
+export { SwatchPicker, type SwatchPickerProps } from './SwatchPicker';
