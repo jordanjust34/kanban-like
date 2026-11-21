@@ -5,7 +5,7 @@ columns, assign teammates, tag with labels, filter, comment, and see every chang
 timeline. Built with React + TypeScript on Supabase, with Postgres Row Level Security as the only
 security boundary.
 
-**[Live demo → kanban-like.vercel.app](https://kanban-like.vercel.app)**. No sign-up: the
+**[Live demo → jordicai.com](https://www.jordicai.com)**. No sign-up: the
 first visit creates a private guest board with sample tasks, teammates and labels.
 
 ## At a glance
@@ -20,7 +20,7 @@ first visit creates a private guest board with sample tasks, teammates and label
 
 ### Try it in a minute
 
-1. Open the [live demo](https://kanban-like.vercel.app). A sample board loads.
+1. Open the [live demo](https://jordicai.com). A sample board loads.
 2. **Drag** a card to another column (or focus it and press `Space`, arrow keys, `Space`).
    Reload: it stays put.
 3. **Click** a card to open the detail sheet. Change its status, assign a teammate, add a label
