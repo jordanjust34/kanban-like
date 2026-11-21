@@ -177,7 +177,7 @@ Each brief below is the **scope**. The actual prompt adds: "Read `docs/DESIGN.md
 
 **P4-2: Realtime** (main session, small): `postgres_changes` on `tasks` filtered by `user_id` → invalidate (skip during a drag). Enable replication for `tasks` in the dashboard (**USER**, 1 click).
 
-**P4-3: Dark mode** (main session, small): `[data-theme="dark"]` token overrides + a toggle. Only if time is left.
+~~**P4-3: Dark mode**~~: dropped from scope (2026-11-21, user decision). Light theme only.
 
 ### Phase 5: polish, QA, deliverables
 
